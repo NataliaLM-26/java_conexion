@@ -26,13 +26,10 @@ public class ConexionDB {
     
     public Connection ConexionDB() {
         try {
-            String url="jdbc:postgresql://localhost:5432/empleados";
             con=DriverManager.getConnection(cadena+"postgres"+"laptophp");
-            //Logger.getLogger(ConexionDB.class.getName()).log(Level.INFO,"se conecto");
-            JOptionPane.showMessageDialog(null, "Se conectó correctamente");
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.INFO,"se conecto");
         } catch (SQLException ex) {
-            //Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-            JOptionPane.showMessageDialog(null, "Error:");
+            Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
         }
         return con;
     }
@@ -47,34 +44,28 @@ public class ConexionDB {
             Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
             return false;
         }
+        finally{
+            if(st!=null){
+                try {
+                    st.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
+                }
+            }
+        }
     }
     
     public ResultSet select(String sql){
-        Statement st=null;
-        try{
-            st=con.createStatement();
-            ResultSet reg= st.executeQuery(sql);
+        try(Statement st = con.createStatement()){
+            ResultSet reg = st.executeQuery(sql);
             return reg;
         } catch (SQLException ex){
             Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE, null,ex);
             return null;
         }
-//        finally{
-//            if(st!=null){
-//                try {
-//                    st.close();
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-//                }
-//            if(reg!=null)
-//                try{
-//                    reg.close();
-//                } catch (SQLException ex){
-//                    Logger.getLogger(ConexionDB.class.getName()).log(Level.SEVERE,null, ex);
-//                }
-//            }
-//        }    
     }
     
-    
+    Connection getConnection(){
+        return con;
+    }
 }
